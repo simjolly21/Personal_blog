@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    <h2>Articles</h2>
+    <ul>
+        {% for article in articles %}
+            <li><a href="{{ url_for('article', title=article['title']) }}">{{ article['title'] }} - {{ article['date'] }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
