@@ -66,3 +66,43 @@ def dashboard():
     return render_template('dashboard.html', articles=articles)
 
 @app.route('/admin/add', methods=['GET', 'POST'])
+def add_article():
+    if not session.get('admin'):
+        return redirect(url_for('login'))
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        date = datetime.now().strftime('%Y-%m-%d')
+        article = {'title': title, 'content': content, 'date': date}
+        save_article(article)
+        return redirect(url_for('dashboard'))
+    return render_template('add_article.html')
+
+@app.route('/admin/edit/<title>', methods=['GET', 'POST'])
+def edit_article(title):
+    if not session.get('admin'):
+        return redirect(url_for('login'))
+    filename = os.path.join(ARTICLES_DIR, f"{title.replace(' ', '_')}.json")
+    with open(filename, 'r') as f:
+        article = json.load(f)
+    if request.method == 'POST':
+        article['title'] = request.form['title']
+        article['content'] = request.form['content']
+        save_article(article)
+        return redirect(url_for('dashboard'))
+    return render_template('edit_article.html', article=article)
+
+@app.route('/admin/delete/<title>')
+def delete(title):
+    if not session.get('admin'):
+        return redirect(url_for('login'))
+    delete_article(title)
+    return redirect(url_for('dashboard'))
+
+@app.route('/admin/logout')
+def logout():
+    session.pop('admin', None)
+    return redirect(url_for('home'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
