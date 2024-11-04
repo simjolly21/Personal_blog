@@ -15,7 +15,7 @@ This is the project link: https://roadmap.sh/projects/personal-blog.
 
     personal_blog/
     │
-    ├── articles/
+    ├── blog/
     │   ├── articles/
     │   └── init.py
     │
